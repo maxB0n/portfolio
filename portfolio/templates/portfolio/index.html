@@ -1,0 +1,484 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Maximilian Bonilla | Engineer</title>
+  
+  <!-- Clean, modern typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <style>
+    /* =========================================
+       VARIABLES & BASE SETUP
+       ========================================= */
+    :root {
+      /* Premium Matte Black Theme */
+      --bg: #0c0c0e; /* Deep matte black */
+      --surface: rgba(24, 24, 27, 0.4); /* Frosted dark zinc */
+      --surface-hover: rgba(39, 39, 42, 0.6); /* Lighter frosted zinc */
+      --border: rgba(255, 255, 255, 0.08); /* Subtle glass border */
+      
+      --text-main: #fafafa; /* Crisp white */
+      --text-muted: #a1a1aa; /* Zinc 400 grey */
+      --accent: #ffffff; /* Pure white accent */
+      
+      --font-display: 'Playfair Display', serif;
+      --font-body: 'Inter', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    
+    html { scroll-behavior: smooth; }
+    
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* =========================================
+       AMBIENT BACKGROUND
+       ========================================= */
+    .ambient-bg {
+      position: fixed; inset: 0; z-index: -1; overflow: hidden;
+      background: var(--bg);
+    }
+    .orb {
+      position: absolute; border-radius: 50%; filter: blur(100px);
+      opacity: 0.05; /* Extremely subtle to keep it matte */
+      animation: float 25s infinite ease-in-out alternate;
+    }
+    .orb-1 {
+      width: 40vw; height: 40vw; background: #ffffff;
+      top: -10%; left: -10%; animation-delay: 0s;
+    }
+    .orb-2 {
+      width: 35vw; height: 35vw; background: #a1a1aa;
+      bottom: -10%; right: -5%; animation-delay: -5s;
+    }
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(8%, 12%) scale(1.1); }
+    }
+    /* Very subtle noise overlay for texture */
+    .noise-overlay {
+      content: ''; position: fixed; inset: 0; z-index: -1; opacity: 0.03; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    }
+
+    /* =========================================
+       LAYOUT & NAVBAR
+       ========================================= */
+    .container { max-width: 1000px; margin: 0 auto; padding: 0 2rem; }
+    
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100; padding: 1.5rem 0;
+      background: linear-gradient(to bottom, rgba(12,12,14,0.95) 0%, rgba(12,12,14,0) 100%);
+      backdrop-filter: blur(8px);
+    }
+    .nav-inner { display: flex; justify-content: space-between; align-items: center; }
+    .logo {
+      font-size: 1rem; font-weight: 500; letter-spacing: 0.05em; color: var(--text-main); text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-muted); text-decoration: none; font-size: 0.85rem; transition: color 0.3s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+
+    /* =========================================
+       HERO SECTION & IMAGE CYCLER
+       ========================================= */
+    .hero { 
+      min-height: 100vh; display: grid; grid-template-columns: 1fr 0.8fr; 
+      gap: 4rem; align-items: center; padding-top: 5rem; 
+    }
+    .hero-content { z-index: 2; }
+    
+    .hero-title {
+      font-family: var(--font-display); font-size: clamp(3rem, 6vw, 5rem);
+      font-weight: 400; line-height: 1.1; margin-bottom: 0.5rem; letter-spacing: -0.02em;
+    }
+    .hero-title span { font-style: italic; color: var(--text-muted); }
+    
+    .hero-cycler-container {
+      font-size: 1.25rem; font-weight: 300; color: var(--text-muted); margin-bottom: 2rem; display: flex; align-items: center;
+    }
+    .hero-cycler-static { margin-right: 0.3rem; }
+    .hero-cycler-text { color: var(--text-main); font-weight: 400; }
+    .hero-cycler-cursor {
+      display: inline-block; width: 2px; height: 1.2em; background-color: var(--text-main);
+      margin-left: 2px; animation: blink 1s infinite; vertical-align: middle;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    .hero-desc {
+      font-size: 1.05rem; color: var(--text-muted); max-width: 550px; margin-bottom: 3rem; line-height: 1.8; font-weight: 300;
+    }
+    
+    /* Clean Button */
+    .btn-clean {
+      display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.75rem 2rem;
+      font-size: 0.9rem; color: var(--bg); background: var(--text-main);
+      text-decoration: none; border-radius: 4px; transition: transform 0.2s, background 0.2s;
+    }
+    .btn-clean:hover { background: #d4d4d8; transform: translateY(-2px); }
+
+    /* Hero Image Cycler */
+    .hero-visual {
+      position: relative; width: 100%; aspect-ratio: 3/4; border-radius: 12px;
+      overflow: hidden; border: 1px solid var(--border);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+    }
+    .cycler-img {
+      position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover;
+      opacity: 0; transition: opacity 0.8s ease, transform 0.8s ease;
+      transform: scale(1.05);
+    }
+    .cycler-img.active {
+      opacity: 1; transform: scale(1);
+    }
+
+    /* =========================================
+       SCROLL REVEAL
+       ========================================= */
+    .reveal { opacity: 0; transform: translateY(20px); transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+
+    /* =========================================
+       SECTIONS
+       ========================================= */
+    .section-padding { padding: 6rem 0; border-top: 1px solid var(--border); }
+    .sec-header { margin-bottom: 3.5rem; }
+    .sec-label { font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 0.5rem; }
+    .sec-title { font-family: var(--font-display); font-size: 2.5rem; font-weight: 400; color: var(--text-main); }
+
+    /* =========================================
+       PROJECTS (Cards without Images)
+       ========================================= */
+    .proj-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+    .subtle-card {
+      position: relative; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: 2rem; display: flex; flex-direction: column;
+      transform-style: preserve-3d;
+      transition: border-color 0.3s ease;
+      backdrop-filter: blur(12px);
+      --mouse-x: 50%; --mouse-y: 50%;
+    }
+    .subtle-card:hover { border-color: rgba(255,255,255,0.25); }
+    
+    /* Enhanced clean flashlight effect */
+    .subtle-card::before {
+      content: ''; position: absolute; inset: 0; border-radius: 8px;
+      background: radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.06), transparent 40%);
+      z-index: 0; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    }
+    .subtle-card:hover::before { opacity: 1; }
+    
+    .card-content { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; transform: translateZ(20px); }
+    .card-date { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 1rem; }
+    .card-title { font-size: 1.15rem; font-weight: 500; margin-bottom: 1rem; color: var(--text-main); }
+    .card-desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; flex: 1; margin-bottom: 2rem; font-weight: 300; }
+    .card-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .tag { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 0.25rem 0.6rem; border-radius: 4px; font-size: 0.75rem; color: var(--text-muted); }
+
+    /* =========================================
+       EXPERIENCE (Clean Timeline)
+       ========================================= */
+    .exp-item {
+      display: grid; grid-template-columns: 1fr; gap: 0.5rem; padding-bottom: 3rem; margin-bottom: 3rem; border-bottom: 1px solid var(--border);
+    }
+    .exp-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    
+    @media(min-width: 640px) {
+      .exp-item { grid-template-columns: 200px 1fr; gap: 2rem; }
+    }
+    .exp-meta { color: var(--text-muted); font-size: 0.9rem; }
+    .exp-date { margin-bottom: 0.25rem; font-size: 0.85rem; color: var(--text-main); }
+    .exp-role { font-size: 1.2rem; font-weight: 500; color: var(--text-main); margin-bottom: 0.25rem; }
+    .exp-org { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.5rem; font-weight: 300; }
+    .exp-bullets { list-style: none; }
+    .exp-bullets li { position: relative; padding-left: 1.25rem; margin-bottom: 0.75rem; color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; font-weight: 300; }
+    .exp-bullets li::before { content: '—'; position: absolute; left: 0; color: #52525b; }
+
+    /* =========================================
+       SKILLS (Clean Marquee)
+       ========================================= */
+    .marquee-wrapper { overflow: hidden; position: relative; margin-bottom: 2rem; mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent); }
+    .marquee { display: flex; width: max-content; animation: scroll 70s linear infinite; }
+    .marquee.reverse { animation-direction: reverse; animation-duration: 80s; }
+    .marquee-content { display: flex; gap: 1rem; padding: 0 0.5rem; }
+    @keyframes scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+    
+    .skill-pill {
+      font-size: 1rem; padding: 0.75rem 2rem; background: var(--surface); border: 1px solid var(--border);
+      border-radius: 4px; white-space: nowrap; color: var(--text-muted); font-weight: 300; transition: color 0.3s, background 0.3s, border-color 0.3s;
+      backdrop-filter: blur(8px);
+    }
+    .skill-pill:hover { color: var(--bg); background: var(--accent); border-color: var(--accent); font-weight: 500; }
+    .skill-cat-title { font-size: 0.85rem; color: var(--text-muted); margin: 3rem 0 1rem; text-align: center; letter-spacing: 0.1em; text-transform: uppercase; }
+
+    /* =========================================
+       FOOTER
+       ========================================= */
+    footer { border-top: 1px solid var(--border); padding: 3rem 0; text-align: center; color: var(--text-muted); font-size: 0.85rem; font-weight: 300; }
+
+    /* Responsive adjustments */
+    @media(max-width: 768px) {
+      .nav-links { display: none; }
+      .hero { grid-template-columns: 1fr; gap: 3rem; }
+      .hero-title { font-size: 2.75rem; }
+      .hero-visual { aspect-ratio: 16/9; max-height: 250px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Ambient Glowing Background -->
+  <div class="ambient-bg">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="noise-overlay"></div>
+  </div>
+
+  <!-- Navbar -->
+  <nav>
+    <div class="container nav-inner">
+      <a href="#" class="logo interactive">M. Bonilla</a>
+      <ul class="nav-links">
+        <li><a href="#projects" class="interactive">Projects</a></li>
+        <li><a href="#experience" class="interactive">Experience</a></li>
+        <li><a href="#skills" class="interactive">Skills</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section (Order: 1) -->
+  <section class="hero container">
+    <div class="hero-content reveal">
+      <h1 class="hero-title">Maximilian <br><span>Bonilla</span></h1>
+      
+      <!-- Typewriter Text Element -->
+      <div class="hero-cycler-container">
+        <span class="hero-cycler-static">I am</span>
+        <span class="hero-cycler-text" id="typewriter"></span>
+        <span class="hero-cycler-cursor"></span>
+      </div>
+
+      <p class="hero-desc">
+        I'm an Electrical and Computer Engineering student at New York University and the Electronics Lead at NYU Rogue Aerospace, where we're building New York's second-ever hybrid propulsion rocket. 
+        I love blending hardware and software, from embedded systems to modern web development.  Outside of academics, you can usually find me running, rock climbing, or hanging out with friends!      </p>
+      <a href="mailto:mcb748@nyu.edu" class="btn-clean interactive">Contact Me</a>
+    </div>
+
+    <!-- Independent Cycling Hero Images -->
+    <div class="hero-visual reveal">
+      <img src="{% static 'portfolio/img/ee.jpg' %}" class="cycler-img active" alt="Electrical Engineering">
+      <img src="{% static 'portfolio/img/rocket.png' %}" class="cycler-img" alt="Rocket">
+      <img src="{% static 'portfolio/img/run.jpg' %}" class="cycler-img" alt="Running">
+      <img src="{% static 'portfolio/img/student.jpg' %}" class="cycler-img" alt="Student">
+      <img src="{% static 'portfolio/img/climb.jpg' %}" class="cycler-img" alt="Climbing">
+    </div>
+  </section>
+
+  <!-- Projects Section (Order: 2) -->
+  <section id="projects" class="section-padding">
+    <div class="container">
+      <div class="sec-header reveal">
+        <div class="sec-label">Selected Work</div>
+        <h2 class="sec-title">Projects</h2>
+      </div>
+      <div class="proj-grid">
+        {% for project in projects %}
+        <div class="subtle-card reveal">
+          <div class="card-content">
+            <div class="card-date">{{ project.date }}</div>
+            <h3 class="card-title">{{ project.title }}</h3>
+            <p class="card-desc">{{ project.bullets.0 }}</p>
+            <div class="card-tags">
+              {% for tag in project.tags %}<span class="tag">{{ tag }}</span>{% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience Section (Order: 3) -->
+  <section id="experience" class="section-padding">
+    <div class="container">
+      <div class="sec-header reveal">
+        <div class="sec-label">Professional</div>
+        <h2 class="sec-title">Experience</h2>
+      </div>
+      <div class="exp-list">
+        {% for job in experience %}
+        <div class="exp-item reveal">
+          <div class="exp-meta">
+            <div class="exp-date">{{ job.date }}</div>
+          </div>
+          <div class="exp-details">
+            <h3 class="exp-role">{{ job.title }}</h3>
+            <p class="exp-org">{{ job.org }} &mdash; {{ job.location }}</p>
+            <ul class="exp-bullets">
+              {% for bullet in job.bullets %}<li>{{ bullet }}</li>{% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section (Order: 4) -->
+  <section id="skills" class="section-padding">
+    <div class="container sec-header reveal">
+      <div class="sec-label">Technologies</div>
+      <h2 class="sec-title">Skills</h2>
+    </div>
+    
+    <div class="reveal">
+      {% for category, skill_list in skills.items %}
+      <div class="skill-cat-title">{{ category }}</div>
+      <div class="marquee-wrapper">
+        <div class="marquee {% if forloop.counter|divisibleby:2 %}reverse{% endif %} interactive">
+          <div class="marquee-content">
+            {% for skill in skill_list %}<div class="skill-pill">{{ skill }}</div>{% endfor %}
+            {% for skill in skill_list %}<div class="skill-pill">{{ skill }}</div>{% endfor %}
+            {% for skill in skill_list %}<div class="skill-pill">{{ skill }}</div>{% endfor %}
+          </div>
+          <div class="marquee-content">
+            {% for skill in skill_list %}<div class="skill-pill">{{ skill }}</div>{% endfor %}
+            {% for skill in skill_list %}<div class="skill-pill">{{ skill }}</div>{% endfor %}
+            {% for skill in skill_list %}<div class="skill-pill">{{ skill }}</div>{% endfor %}
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>Designed cleanly. Engineered dynamically with Django.</p>
+    </div>
+  </footer>
+
+  <!-- =========================================
+       JAVASCRIPT INTERACTIONS
+       ========================================= -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      
+      // 1A. TYPEWRITER EFFECT (Independent)
+      const roles = [
+        'a Student.', 
+        'an Electrical Engineer.', 
+        'a Computer Engineer.', 
+        'a Software Engineer.',
+        'an Aerospace Enthusiast.', 
+        'a Web Dev Enthusiast.', 
+        'a Runner.', 
+        'a Climber.'
+      ];
+      
+      let roleIndex = 0;
+      let charIndex = 0;
+      let isDeleting = false;
+      const typewriterEl = document.getElementById('typewriter');
+
+      function typeEffect() {
+        const currentRole = roles[roleIndex];
+        
+        if (isDeleting) {
+          typewriterEl.textContent = currentRole.substring(0, charIndex - 1);
+          charIndex--;
+        } else {
+          typewriterEl.textContent = currentRole.substring(0, charIndex + 1);
+          charIndex++;
+        }
+
+        let typingSpeed = isDeleting ? 30 : 60;
+
+        // Pause at the end of the word
+        if (!isDeleting && charIndex === currentRole.length) {
+          typingSpeed = 2000; 
+          isDeleting = true;
+        } 
+        // Move to next word when fully deleted
+        else if (isDeleting && charIndex === 0) {
+          isDeleting = false;
+          roleIndex = (roleIndex + 1) % roles.length;
+          typingSpeed = 400; 
+        }
+
+        setTimeout(typeEffect, typingSpeed);
+      }
+      typeEffect(); // Initialize
+
+      // 1B. HERO IMAGE CYCLER (Independent)
+      // Cycles to the next image every 4 seconds
+      const cyclerImgs = document.querySelectorAll('.cycler-img');
+      let currentImgIndex = 0;
+      
+      if (cyclerImgs.length > 1) {
+        setInterval(() => {
+          cyclerImgs[currentImgIndex].classList.remove('active');
+          currentImgIndex = (currentImgIndex + 1) % cyclerImgs.length;
+          cyclerImgs[currentImgIndex].classList.add('active');
+        }, 4000); 
+      }
+
+      // 2. 3D TILT & FLASHLIGHT ON CARDS
+      const cards = document.querySelectorAll('.subtle-card');
+      cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+          
+          // 3D Tilt Math (reduced exaggeration)
+          const centerX = rect.width / 2;
+          const centerY = rect.height / 2;
+          const rotateX = ((y - centerY) / centerY) * -4;
+          const rotateY = ((x - centerX) / centerX) * 4;
+          
+          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.01, 1.01, 1.01)`;
+        });
+        
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+          card.style.transition = 'transform 0.5s ease';
+        });
+        
+        card.addEventListener('mouseenter', () => {
+          card.style.transition = 'none';
+        });
+      });
+
+
+      // 3. SCROLL REVEAL (Intersection Observer)
+      const reveals = document.querySelectorAll('.reveal');
+      const revealObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('active');
+          observer.unobserve(entry.target); 
+        });
+      }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+
+      reveals.forEach(reveal => revealObserver.observe(reveal));
+    });
+  </script>
+
+</body>
+</html>
