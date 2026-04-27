@@ -41,18 +41,6 @@ def index(request):
 
     projects = [
         {
-            'title': 'Full-Stack Django E-Commerce Engine',
-            'date': 'Recent',
-            'bullets': [
-                'Developed a dynamic web application using the MVT (Model-View-Template) architecture to manage product inventories, shopping carts, and customer orders.',
-                'Engineered a session-based shopping cart system to manage persistent state across user sessions without requiring immediate database writes.',
-                'Designed a relational database schema using Django ORM and SQLite to handle complex relationships between products, categories, and customer order records.',
-                'Implemented a responsive, mobile-first frontend using Bootstrap 5, focusing on UI/UX principles for intuitive navigation and distraction-free checkout flows.',
-                'Managed the development lifecycle through Git/GitHub, utilizing systematic branching and committing to maintain code integrity and version history.',
-            ],
-            'tags': ['Python', 'Django', 'SQLite', 'Bootstrap 5', 'Git'],
-        },
-        {
             'title': 'Rocket Ground Station Equipment (GSE)',
             'date': 'Feb 2026 – Present',
             'bullets': [
@@ -71,6 +59,18 @@ def index(request):
                 'Conducted bench testing to calibrate motor torque, synchronize servo-valve actuation, and validate control logic timing under simulated loads.',
             ],
             'tags': ['Arduino', 'C++', 'Servo', 'Stepper Motor', 'Motor Driver'],
+        },
+        {
+            'title': 'Full-Stack Django E-Commerce Engine',
+            'date': 'April 2025',
+            'bullets': [
+                'Developed a dynamic web application using the MVT (Model-View-Template) architecture to manage product inventories, shopping carts, and customer orders.',
+                'Engineered a session-based shopping cart system to manage persistent state across user sessions without requiring immediate database writes.',
+                'Designed a relational database schema using Django ORM and SQLite to handle complex relationships between products, categories, and customer order records.',
+                'Implemented a responsive, mobile-first frontend using Bootstrap 5, focusing on UI/UX principles for intuitive navigation and distraction-free checkout flows.',
+                'Managed the development lifecycle through Git/GitHub, utilizing systematic branching and committing to maintain code integrity and version history.',
+            ],
+            'tags': ['Python', 'Django', 'SQLite', 'Bootstrap 5', 'Git'],
         },
         {
             'title': 'Full-Stack Airline Reservation System',
